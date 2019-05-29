@@ -14,7 +14,7 @@ Function Get-SP-Credentials () # Looks up credentails stored in the KeyStore loc
 	
 	$KeyCrypt = (120,80,177,104,51,125,207,56,9,193,73,130,194,179,251,82,35,70,169,109,92,180,55,125,88,209,58,166,75,92,211,116)
 
-	$O365User = (Get-ADUser $User -Properties UserPrincipalName | Select UserPrincipalName).UserPrincipalName 
+	$O365User = (Get-ADUser $User -Properties UserPrincipalName | Select-Object UserPrincipalName).UserPrincipalName 
 
 	$O365PassFile = "$KeyStore$O365User.txt"
  
@@ -22,20 +22,20 @@ Function Get-SP-Credentials () # Looks up credentails stored in the KeyStore loc
 	# Prompt if passfile not present
 	if (!(Test-Path -Path $O365PassFile)) {Read-Host -Prompt "Please enter password for $O365User :" -AsSecureString | ConvertFrom-SecureString -Key $KeyCrypt | Out-File $O365PassFile}
 	$O365Password = Get-Content $O365PassFile | ConvertTo-SecureString -ErrorAction Stop -Key $KeyCrypt
-	return $O365Credentials = New-Object System.Management.Automation.PSCredential ($O365User, $O365Password)
+	return New-Object System.Management.Automation.PSCredential ($O365User, $O365Password)
     
 }
 
-Function Upload-to-SPO () # Uploads a file to SharePoint Online
+Function UploadSPO () # Uploads a file to SharePoint Online
     {
     param (
-        [Parameter(Mandatory=$true)] [string] $O365Credentials,
+        [Parameter(Mandatory=$true)] [SecureString] $O365Credentials,
 		[Parameter(Mandatory=$true)] [string] $Site,
         [Parameter(Mandatory=$true)] [string] $Library,
         [Parameter(Mandatory=$true)] [string] $File
         )
     #
-    $user = Get-ADUser -Filter {EmailAddress -eq "andrew.brooke@suffolk.gov.uk"} -Properties CanonicalName | Select CanonicalName
+    $user = Get-ADUser -Filter {EmailAddress -eq "andrew.brooke@suffolk.gov.uk"} -Properties CanonicalName | Select-Object CanonicalName
 
 
     #Setup to use Proxy
