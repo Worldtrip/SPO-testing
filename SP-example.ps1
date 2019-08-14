@@ -12,7 +12,7 @@ Function Get-SP-Credentials () # Looks up credentails stored in the KeyStore loc
 	
 	# Set AES Key to encrypt password, this could be a generated key and stored somewhere more restrictive.
 	
-	$KeyCrypt = (120,80,177,104,51,125,207,56,9,193,73,130,194,179,251,82,35,70,169,109,92,180,55,125,88,209,58,166,75,92,211,116)
+	$KeyCrypt = Get-Content "AES.key"
 
 	$O365User = (Get-ADUser $User -Properties UserPrincipalName | Select-Object UserPrincipalName).UserPrincipalName 
 
